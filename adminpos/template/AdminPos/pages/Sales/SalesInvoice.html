@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Admin POS| User Form</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="../../dist/css/adminlte.min.css">
+  <!-- Google Font: Source Sans Pro -->
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+  <link rel="stylesheet" href="../../plugins/select2/css/select2.min.css">
+  <link rel="stylesheet" href="../../plugins/select2-bootstrap4-theme/select2-bootstrap4.m in.css">
+</head>
+<style>
+    table.table td a {
+    cursor: pointer;
+    display: inline-block;
+    margin: 0 5px;
+    min-width: 24px;
+}    
+table.table td a.add {
+    color: #27C46B;
+}
+table.table td a.edit {
+    color: #FFC107;
+}
+table.table td a.delete {
+    color: #E34724;
+}
+table.table td i {
+    font-size: 19px;
+}
+table.table td a.add i {
+    font-size: 24px;
+    margin-right: -1px;
+    position: relative;
+    top: 3px;
+}
+table.table td .add {
+    display: none;
+}
+.table-wrapper {
+    overflow-x: scroll !important;
+}
+.select2-container .select2-selection--single,.select2-container--default .select2-selection--single .select2-selection__arrow{
+    height: 38px !important;
+}
+</style>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+  <!-- Navbar -->
+  <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+    <!-- Left navbar links -->
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+      </li>
+      <li class="nav-item d-none d-sm-inline-block">
+        <a href="../../index.html" class="nav-link">Home</a>
+      </li>
+      <li class="nav-item d-none d-sm-inline-block">
+        <a href="#" class="nav-link">Contact</a>
+      </li>
+    </ul>
+
+    <!-- SEARCH FORM -->
+    
+  </nav>
+  <!-- /.navbar -->
+
+  <!-- Main Sidebar Container -->
+  <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a href="../../index.html" class="brand-link">
+      <img src="../../dist/img/AdminLTELogo.png"
+           alt="AdminLTE Logo"
+           class="brand-image img-circle elevation-3"
+           style="opacity: .8">
+      <span class="brand-text font-weight-light">Admin POS</span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <!-- Sidebar user (optional) -->
+      
+      <!-- Sidebar Menu -->
+      <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <!-- Add icons to the links using the .nav-icon class
+               with font-awesome or any other icon font library -->
+          <li class="nav-item">
+            <a href="../../index.html" class="nav-link">
+              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p>
+                Dashboard
+              </p>
+            </a>
+          </li>
+          <li class="nav-item has-treeview ">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-user"></i>
+              <p>
+                User
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item ">
+                <a href="../User/UserRegister.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>User Register</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="../User/UserProfile.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>User Profile</p>
+                </a>
+              </li>
+               </ul>
+          </li>
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-bullseye"></i>
+              <p>
+                Product
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="../Product/ProductAdd.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add New Product</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="../Product/ProductList.html" class="nav-link ">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Product List</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="../Product/ProductCat.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Category</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="../Product/ProductBrand.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Brand</p>
+                </a>
+              </li>
+               </ul>
+          </li>
+          <li class="nav-item">
+            <a href="./pages/Sales/SalesInvoice.html" class="nav-link active">
+              <i class="nav-icon fas fa-shopping-cart"></i>
+              <p>
+                Sales Invoice
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="./pages/Purchase/PurchaseInvoice.html" class="nav-link">
+              <i class="nav-icon fas  fa-shopping-basket"></i>
+              <p>
+                Purchase Invoice
+              </p>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+  </aside>
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>New Sales Invoice</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="../../index.html">Home</a></li>
+              <li class="breadcrumb-item active">Sales Invoice</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <section class="content">
+        <div class="container-fluid">
+          
+            <!-- left column -->
+            
+              <!-- general form elements -->
+              <div class="card card-primary table-card">
+                <div class="card-header">
+                  <h3 class="card-title">Sales Invoice</h3>
+                </div>
+               
+                <div class="row">
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="InvoiceNumber" >Invoice Number</label>
+                            <div>
+                            <input type="text" name="InvoiceNumber" id="sinvoice_number" class="form-control">
+                        </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Invoice Date</label>
+                            <div class="input-group">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                              </div>
+                              <input type="text" id="datemask" class="form-control" data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" data-mask>
+                            </div>
+                            <!-- /.input group -->
+                          </div>
+
+                          <div class="form-group">
+                            <label for="InvoiceType" >Invoice Type</label>
+                            <div>
+                            <select type="text" name="InvoiceType" id="sinvoice_type" class="form-control">
+                                <option value="0">Cash On Delivery</option>
+                                <option value="1">Bank Transfer</option>
+                                <option value="2">Easy Paisa</option>
+                        </select>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="si_customername" >Customer Name</label>
+                            <div>
+                            <input type="text" name="si_customername" id="si_customername" class="form-control">
+                        </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="si_customeremail" >Customer Email</label>
+                            <div>
+                            <input type="email" name="si_customeremail" id="si_customeremail" class="form-control">
+                        </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="si_customercontact" >Customer Contact</label>
+                            <div>
+                            <input type="text" name="si_customercontact" id="si_customercontact" class="form-control">
+                        </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label for="si_customeraddr" >Customer Address</label>
+                            <div>
+                            <textarea class="form-control" name="si_customeraddr" rows="5" id="si_customeraddr" ></textarea>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr>
+                
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h2>Products</h2>
+                        </div>
+                        
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                            <label for="prcode">Product Code</label>
+                            <div>
+                            <input type="text" class="form-control" name="prcode" id="prcode" required>
+                        </div>
+                        </div>
+                        </div>
+
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="prcode">Product Name</label>
+                                <div>
+                                    <select class="form-control select2" id="prname" required>
+                                      <option disabled selected>--Select One--</option>
+                                      <option>Brushes</option>
+                                    </select>
+                            </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                            <label for="prprice">Product Price</label>
+                            <div>
+                            <input type="text" class="form-control" name="prprice" id="prprice" required>
+                        </div>
+                        </div>
+                        </div>
+                        
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                           
+                            <button type="button" class="btn btn-info add-new"><i class="fa fa-plus"></i> Add New</button>
+                        </div>
+                       </div>
+                       <div class="table-wrapper">
+                    <table class="table table-bordered" id="producttable">
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>Name</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                                <th>Discount</th>
+                                <th>Total</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                        </tbody>
+                    </table>
+                </div>
+
+               
+
+                <hr>
+                <!-- <div class="col-md-12">
+                    <div class="form-group">
+                       
+                        <button type="button" class="btn btn-info done" onclick="calcSub();"><i class="fa fa-calendar-alt"></i> Done</button>
+                    </div>
+                   </div> -->
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="si_subtotal" >Subtotal</label>
+                            <div>
+                            <input type="text" name="si_subtotal" id="si_subtotal" class="form-control" disabled>
+                        </div>
+                    </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="si_discount" >Discount</label>
+                            <div>
+                            <input type="text" name="si_discount" id="si_discount" class="form-control">
+                        </div> 
+                    </div>
+                </div> 
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="si_tax" >Tax</label>
+                        <div>
+                        <input type="text" name="si_tax" id="si_tax" class="form-control">
+                    </div>
+                </div>
+                </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="si_shipping" >Shipping Charges</label>
+                    <div>
+                    <input type="text" name="si_shipping" id="si_shipping" class="form-control">
+                </div> 
+            </div>
+        </div> 
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="si_total">Total</label>
+                <div>
+                <input type="text" name="si_total" id="si_total" class="form-control">
+            </div>
+        </div>
+        </div>
+
+        <div class="card-footer">
+          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="submit" class="btn btn-danger">Delete</button>
+        </div>
+</div>
+            </section>
+
+</div>
+<!-- /.content-wrapper -->
+<footer class="main-footer">
+  <div class="float-right d-none d-sm-block">
+    <b>Version</b> 3.0.5
+  </div>
+  <strong>Copyright &copy; 2020 <a href="#">Admin POS</a>.</strong> All rights Reserved
+</footer>
+
+<!-- Control Sidebar -->
+<aside class="control-sidebar control-sidebar-dark">
+  <!-- Control sidebar content goes here -->
+</aside>
+<!-- /.control-sidebar -->
+</div>
+<!-- ./wrapper -->
+<!-- <script src="js/jquery-3.5.1.js"></script> -->
+
+
+<!-- jQuery -->
+<script src="../../plugins/jquery/jquery.min.js"></script>
+
+<!-- <script src="js/jquery.dataTables.min.js"></script> -->
+<!-- <script src="js/dataTables.bootstrap.min.js"></script> -->
+
+
+<!-- Bootstrap 4 -->
+<script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- Select2 -->
+<script src="../../plugins/select2/js/select2.full.min.js"></script>
+
+<script src="../../plugins/moment/moment.min.js"></script>
+<script src="../../plugins/inputmask/min/jquery.inputmask.bundle.min.js"></script>
+<!-- bs-custom-file-input -->
+<script src="../../plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
+<!-- AdminLTE App -->
+<script src="../../dist/js/adminlte.min.js"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="../../dist/js/demo.js"></script>
+
+
+<script type="text/javascript">
+
+$(document).ready(function () {
+bsCustomFileInput.init();
+});
+
+$('#datemask').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })
+    //Datemask2 mm/dd/yyyy
+    $('#datemask2').inputmask('mm/dd/yyyy', { 'placeholder': 'mm/dd/yyyy' })
+
+function calcTotal(){
+        $('#ptotal').val(($('#pprice').val()*$('#pqty').val())-$('#pdisc').val());
+}
+
+function calcSub(){
+    var cls = document.getElementById("producttable").getElementsByTagName("td");
+    var sum = 0;
+    for (var i = 0; i < cls.length; i++){
+        if(cls[i].className == "producttotals"){
+            sum += isNaN(cls[i].innerHTML) ? 0 : parseInt(cls[i].innerHTML);
+        }
+    }
+    $('#si_subtotal').val(sum);
+}
+
+
+$(document).ready(function(){
+	$('[data-toggle="tooltip"]').tooltip();
+	var actions = $("table td:last-child").html();
+	// Append table with add row form on add new button click
+    $(".add-new").click(function(){
+		$(this).attr("disabled", "disabled");
+		var index = $("table tbody tr:last-child").index();
+        var row = '<tr>' +
+            '<td><input type="text" class="form-control" name="code" id="pcode" required disabled></td>' +
+            '<td><input type="text" class="form-control" name="name" id="pname" required disabled></td>' +
+            '<td><input type="text" class="form-control" name="quantity" id="pqty" oninput="calcTotal();" value="0" required></td>' +
+            '<td><input type="text" class="form-control" name="price" id="pprice" oninput="calcTotal();" value="0" required disabled></td>' +
+            '<td><input type="text" class="form-control" name="discount" oninput="calcTotal();" value="0" id="pdisc"></td>' +
+            '<td class="producttotals"><input type="text" class="form-control" name="linetotal" value="0" id="ptotal" disabled></td>' +
+            '<td><a class="add" title="Add" data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a><a class="delete" title="Delete"><i class="material-icons">&#xE872;</i></a></td>'+
+			// '<td>' + actions + '</td>' +
+        '</tr>';
+        var name = $('#prname').val();
+        var code = $('#prcode').val();
+        var price = $('#prprice').val();
+
+       
+          $("table").append(row);		
+		$("table tbody tr").eq(index + 1).find(".add, .edit").toggle();
+        $('[data-toggle="tooltip"]').tooltip();
+         $('#pcode').val($('#prcode').val());
+         $('#pname').val($('#prname').val());
+         $('#pprice').val($('#prprice').val());
+
+         
+      
+    	
+    });
+	// Add row on add button click
+	$(document).on("click", ".add", function(){
+		var empty = false;
+        var input = $(this).parents("tr").find('input[type="text"]');
+        
+        input.each(function(){
+			if(!$(this).val()){
+				$(this).addClass("error");
+				empty = true;
+			} else{
+                $(this).removeClass("error");
+            }
+                
+        });
+        
+		$(this).parents("tr").find(".error").first().focus();
+		if(!empty){
+			input.each(function(){
+				$(this).parent("td").html($(this).val());
+			});			
+			$(this).parents("tr").find(".add, .edit").toggle();
+            $(".add-new").removeAttr("disabled");
+            
+        }
+      
+        calcSub();
+        
+    });
+	// Edit row on edit button click
+	// $(document).on("click", ".edit", function(){	
+        
+  //       $(this).parents("tr").find("td:not(:last-child)").each(function(){
+  //           var input ='<input type="text" class="form-control edit_table" value="' + $(this).text() + '">';
+	// 		$(this).html(input);
+	// 	});		
+	// 	$(this).parents("tr").find(".add, .edit").toggle();
+  //       $(".add-new").attr("disabled", "disabled");
+  //   });
+	// Delete row on delete button click
+	$(document).on("click", ".delete", function(){
+        $(this).parents("tr").remove();
+        $(".add-new").removeAttr("disabled");
+        calcSub();
+    });
+    
+
+});
+
+
+
+$(function () {
+    //Initialize Select2 Elements
+    $('.select2').select2()
+
+    //Initialize Select2 Elements
+    $('.select2bs4').select2({
+      theme: 'bootstrap4'
+    })
+})
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,171 @@
+{% extends 'AdminPos/index.html' %}
+  <!-- Content Wrapper. Contains page content -->
+
+{% block body_block %}  
+
+ <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>Invoice</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{% url 'accounts:index' %}">Home</a></li>
+              <li class="breadcrumb-item active">Invoice</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="callout callout-info">
+              <h5><i class="fas fa-info"></i> Note:</h5>
+              This page has been enhanced for PDF generation. Click the Generate PDF button at the bottom of the invoice to test.
+            </div>
+
+
+            <!-- Main content -->
+            <div class="invoice p-3 mb-3">
+              <!-- title row -->
+              <div class="row">
+                <div class="col-12">
+                  <h4>
+                    <i class="fas fa-globe"></i> Lexis Shop
+                    <small class="float-right">Date: {% now "d/m/Y" %}</small>
+                  </h4>
+                </div>
+                <!-- /.col -->
+              </div>
+              <!-- info row -->
+              <div class="row invoice-info">
+                <div class="col-sm-4 invoice-col">
+                  From
+                  <address>
+                    <strong>Lexis Shop</strong><br>
+                    795 Folsom Ave, Suite 600<br>
+                    San Francisco, CA 94107<br>
+                    Phone: (804) 123-5432<br>
+                    Email: info@almasaeedstudio.com
+                  </address>
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-4 invoice-col">
+                  To
+                  <address>
+                    <strong>{{ invoice.Customername }}</strong><br>
+                    Address: {{ invoice.Address|default:'-' }} <br>
+                    Phone: {{ invoice.Contactno|default:'-' }}<br>
+                    Email: {{ invoice.CustomerEmail|default:'-' }}
+                  </address>
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-4 invoice-col">
+                  <b>Invoice #{{ invoice.Invoiceno }}</b><br>
+                  <br>
+                  <b>Payment Date:</b>{{ invoice.Invoicedate|date:"d/m/Y" }}<br>
+                </div>
+                <!-- /.col -->
+              </div>
+              <!-- /.row -->
+
+              <!-- Table row -->
+              <div class="row">
+                <div class="col-12 table-responsive">
+                  <table class="table table-striped">
+                    <thead>
+                    <tr>
+                      <th>Qty</th>
+                      <th>Product</th>
+                      <th>Serial #</th>
+                      <th>Price</th>
+                      <th>Discount</th>
+                      <th>Subtotal</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for product,product_total in product_list %}
+                    <tr>
+                      <td>{{ product.SaleQuantity }}</td>
+                      <td>{{ product.product_name }}</td>
+                      <td>{{ product.product_code }}</td>
+                      <td>{{ product.Price }}</td>  
+                      <td>{{ product.Discount }}</td>
+                      <td>{{ product_total }}</td>
+                    </tr>
+                    {% endfor %}
+                    
+                    </tbody>
+                  </table>
+                </div>
+                <!-- /.col -->
+              </div>
+              <!-- /.row -->
+
+              <div class="row">
+                <!-- accepted payments column -->
+                <div class="col-6">
+                  <p class="lead">Payment Methods:</p>
+                  <p class="text-muted well well-sm shadow-none" style="margin-top: 10px;">
+                    <b>{{ invoice.Invoicetype }}</b>
+                  </p>
+                </div>
+                <!-- /.col -->
+                <div class="col-6">
+                  
+                  <div class="table-responsive">
+                    <table class="table">
+                      <tr>
+                        <th style="width:50%">Subtotal:</th>
+                        <td>{{ invoice.SubTotal }}</td>
+                      </tr>
+                      <tr>
+                        <th>Discount:</th>
+                        <td>{{ invoice.Discount }}</td>
+                      </tr>
+                      <tr>
+                        <th>Tax: </th>
+                        <td>{{ invoice.Tax }}</td>
+                      </tr>
+                      <tr>
+                        <th>Shipping:</th>
+                        <td>{{ invoice.Shippingcharge }}</td>
+                      </tr>
+                      <tr>
+                        <th>Total:</th>
+                        <td>{{ invoice_total }}</td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+                <!-- /.col -->
+              </div>
+              <!-- /.row -->
+
+              <!-- this row will not appear when printing -->
+              <div class="row no-print">
+                <div class="col-12">
+                  <a href="{% url 'sales_app:invoice_pdf_create' pk=invoice.pk %}" target="_blank" class="btn btn-primary float-right" style="margin-right: 5px; color: white;">
+                    <i class="fas fa-download"></i> Generate PDF
+                  </a>
+                </div>
+              </div>
+            </div>
+            <!-- /.invoice -->
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  {% endblock %}
+  <!-- /.content-wrapper -->
+ {% block js %}
+ {% endblock %}

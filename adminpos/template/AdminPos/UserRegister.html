@@ -1,0 +1,78 @@
+{% extends 'AdminPos/index.html' %}
+{% load bootstrap4 %}
+  <!-- Content Wrapper. Contains page content -->
+
+{% block body_block %}  
+  <div class="content-wrapper">
+  {% for message in messages %}
+<div class="alert alert-{{ message.tags }}  alert-dismissible fade show" role="alert">
+  <strong>{{ message }}</strong>
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+{% endfor %}
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>User Register</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{% url 'accounts:index' %}">Home</a></li>
+              <li class="breadcrumb-item active">User Register</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <!-- left column -->
+          <div class="col-md-12">
+            <!-- general form elements -->
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">User Info</h3>
+              </div>
+              <!-- /.card-header -->
+              <!-- form start -->
+              <form role="form" method="POST" enctype='multipart/form-data'>
+               {% csrf_token %}
+                <div class="card-body">
+                  {% bootstrap_form form %}
+                </div>
+                <!-- /.card-body -->
+
+                <div class="card-footer">
+                {% if user.is_admin %}
+                  <button type="submit" class="btn btn-primary">Submit</button>
+                  {% else %}
+                  <span class="d-inline-block" data-placement="top" data-trigger="hover" data-toggle="popover"  data-content="You are not authorized to create user">
+                  <button class="btn btn-primary" style="pointer-events: none;" type="button" disabled>Submit</button>
+                  </span>
+                  {% endif %}                  
+                  <button type="submit" class="btn btn-danger">Delete</button>
+                </div>
+              </form>
+            </div>
+            <!-- /.card -->
+
+                </section>
+    <!-- /.content -->
+  </div>
+  {% endblock %}
+  <!-- /.content-wrapper -->
+ {% block js %}
+  <script type="text/javascript"> 
+  $(function () {
+  $('[data-toggle="popover"]').popover()
+  })
+</script>
+
+ {% endblock %}

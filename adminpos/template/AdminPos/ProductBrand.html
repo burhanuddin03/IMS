@@ -1,0 +1,92 @@
+{% extends 'AdminPos/index.html' %}
+{% load bootstrap4 %}
+  <!-- Content Wrapper. Contains page content -->
+  {% block body_block %}
+  <div class="content-wrapper">
+   {% for message in messages %}
+<div class="alert alert-{{ message.tags }} ml-3  mr-3 alert-dismissible fade show" role="alert">
+  <strong>{{ message }}</strong>
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+{% endfor %}
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>Add New Brand</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{% url 'accounts:index' %}">Home</a></li>
+              <li class="breadcrumb-item active">Brand</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <section class="content">
+        <div class="container-fluid">
+          <div class="row">
+            <!-- left column -->
+            <div class="col-md-12">
+              <!-- general form elements -->
+              <div class="card card-primary">
+                <div class="card-header">
+                  <h3 class="card-title">Add New Brand</h3>
+                </div>
+
+<form class="form-horizontal" method="POST" id='cat_form'>
+  {% csrf_token %}
+    <fieldset>
+    
+    <!-- Form Name -->
+     <div class='card-body'>
+    {% bootstrap_form form %} 
+    </div>
+    <!-- Button -->
+    <div class="card-footer">
+        <button name="singlebutton" type="submit" class="btn btn-primary">Publish</button>
+        <button name="singlebutton" id='brand_delete' class="btn btn-danger">Delete</button>
+      </div>
+    
+    </fieldset>
+    </form>
+</div>
+</section>
+
+</div>
+{% endblock %}
+<!-- /.content-wrapper -->
+
+
+<!-- jQuery -->
+{% block js %}
+{% load static %}
+
+
+<script src="{% static '/plugins/bs-custom-file-input/bs-custom-file-input.min.js' %}"></script>
+
+
+<script src="{% static '/plugins/select2/js/select2.full.min.js' %}"></script>
+<script type="text/javascript">
+$(document).ready(function () {
+bsCustomFileInput.init();
+});
+
+
+
+$('#brand_delete').on('click',function(e){
+  
+  e.preventDefault();
+  var item=$('#product_brand').val();
+ 
+      $('#cat_form').attr('action',"{% url 'Product_app:delete_brand' %}").submit();
+})
+
+
+</script>
+{% endblock %}

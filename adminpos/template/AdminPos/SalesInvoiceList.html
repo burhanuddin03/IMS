@@ -1,0 +1,364 @@
+{% extends 'AdminPos/index.html' %}
+{% load bootstrap4 %}
+
+{% block links %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static  'plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+{% endblock %}
+{% block css %}
+* {box-sizing: border-box}
+
+/* Set a style for all buttons */
+button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  opacity: 0.9;
+}
+
+button:hover {
+  opacity:1;
+}
+
+/* Float cancel and delete buttons and add an equal width */
+.cancelbtn, .deletebtn {
+  float: left;
+  width: 50%;
+}
+
+/* Add a color to the cancel button */
+.cancelbtn {
+  background-color: #ccc;
+  color: black;
+}
+
+/* Add a color to the delete button */
+.deletebtn {
+  background-color: #f44336;
+}
+
+/* Add padding and center-align text to the container */
+.container {
+  padding: 16px;
+  text-align: center;
+}
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1040; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: #474e5d;
+  padding-top: 50px;
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* Style the horizontal ruler */
+hr {
+  border: 1px solid #f1f1f1;
+  margin-bottom: 25px;
+}
+
+/* The Modal Close Button (x) */
+.close {
+  position: absolute;
+  right: 35px;
+  top: 15px;
+  font-size: 40px;
+  font-weight: bold;
+  color: #f1f1f1;
+}
+
+.close:hover,
+.close:focus {
+  color: #f44336;
+  cursor: pointer;
+}
+
+/* Clear floats */
+.clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+/* Change styles for cancel button and delete button on extra small screens */
+@media screen and (max-width: 300px) {
+  .cancelbtn, .deletebtn {
+    width: 100%;
+  }
+}
+
+{% endblock %}
+
+  <!-- Content Wrapper. Contains page content -->
+  {% block body_block %} 
+  <div class="content-wrapper">
+  {% for message in messages %}
+<div class="alert alert-{{ message.tags }}" role="alert">
+  <strong>{{ message }}</strong>
+</div>
+{% endfor %}
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>SalesInvoice List</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{% url 'accounts:index' %}">Home</a></li>
+              <li class="breadcrumb-item active">All Sale Invoices</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+        {% comment %} modal form starts {% endcomment %}
+  <div id="id01" class="modal">
+  <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
+  <form  method="post" class="modal-content" action="" id="delete_confirm_form">
+    {% csrf_token %}
+    <div class="container">
+      <h1>Delete Account</h1>
+      <p>Are you sure you want to delete your account?</p>
+
+      <div class="clearfix">
+        <button type="button" class="cancelbtn">Cancel</button>
+        <button type="submit" class="deletebtn">Delete</button>
+      </div>
+    </div>
+  </form>
+  </div>
+  {% comment %} end form  {% endcomment %}
+  
+  <div class="container-fluid ml-3">
+  <div class="row">
+    <form method='GET'>
+    <div class="row">
+      <div class="col">
+        <input type="text" id='datemask'value="{{ sdate }}" name='sdate' placeholder='Start Date' class="form-control"  data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" data-mask>
+      </div>
+      
+      <div class="col">
+        <input type="text" id='datemask2' name='edate' value="{{ edate }}" class="form-control" placeholder='End Date' data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" data-mask>
+      </div>
+      <span style='margin-top: 5px; font-weight: bold;'>
+      OR
+      </span>
+      <div class="form-group col-md-4">
+      <select id="inputState" class="form-control" name='timespan'>
+        {% if timespan == '1' %}
+        <option selected value=1>All</option>
+        <option value=2>Past 15 Days Sales</option>
+        <option value=3>Past 1 Month Sales</option>
+        <option value=4>Past 3 Months Sales</option>
+        <option value=5>Past 6 Months Sales</option>
+        <option value=6>Past 12 Months Sales</option>
+        {% elif timespan == '2' %}
+        <option  value=1>All</option>
+        <option selected value=2>Past 15 Days Sales</option>
+        <option value=3>Past 1 Month Sales</option>
+        <option value=4>Past 3 Months Sales</option>
+        <option value=5>Past 6 Months Sales</option>
+        <option value=6>Past 12 Months Sales</option>
+        {% elif timespan == '3' %}
+        <option  value=1>All</option>
+        <option  value=2>Past 15 Days Sales</option>
+        <option selected value=3>Past 1 Month Sales</option>
+        <option value=4>Past 3 Months Sales</option>
+        <option value=5>Past 6 Months Sales</option>
+        <option value=6>Past 12 Months Sales</option>
+        {% elif timespan == '4' %}
+        <option  value=1>All</option>
+        <option  value=2>Past 15 Days Sales</option>
+        <option value=3>Past 1 Month Sales</option>
+        <option selected value=4>Past 3 Months Sales</option>
+        <option value=5>Past 6 Months Sales</option>
+        <option value=6>Past 12 Months Sales</option>
+        {% elif timespan == '5' %}
+        <option  value=1>All</option>
+        <option  value=2>Past 15 Days Sales</option>
+        <option value=3>Past 1 Month Sales</option>
+        <option value=4>Past 3 Months Sales</option>
+        <option selected value=5>Past 6 Months Sales</option>
+        <option value=6>Past 12 Months Sales</option>
+        {% elif timespan == '6' %}
+        <option  value=1>All</option>
+        <option  value=2>Past 15 Days Sales</option>
+        <option value=3>Past 1 Month Sales</option>
+        <option value=4>Past 3 Months Sales</option>
+        <option value=5>Past 6 Months Sales</option>
+        <option selected value=6>Past 12 Months Sales</option>
+        {% else %}
+        <option  value=1>All</option>
+        <option  value=2>Past 15 Days Sales</option>
+        <option value=3>Past 1 Month Sales</option>
+        <option value=4>Past 3 Months Sales</option>
+        <option value=5>Past 6 Months Sales</option>
+        <option value=6>Past 12 Months Sales</option>
+      {% endif %}
+      </select>
+    </div>
+   
+    <button type="submit" class="btn btn-info" style='margin-bottom: 15px; margin-left: 7px;'> Filter </button>
+    </div>
+      </form>
+      
+       <div class="card text-white bg-info mb-3 text-center" style="max-width: 18rem; width:20%; margin-left: 50px;">
+  <div class="card-header">Total Sale</div>
+  <div class="card-body">
+    <p class="card-text"><i>{{ total_sale }}</i></p>
+  </div>
+</div>
+</div>
+</div>
+    <section class="content">
+        <div class="container-fluid">
+          
+            <!-- left column -->
+            
+              <!-- general form elements -->
+              <div class="card card-primary table-card">
+                <div class="card-header">
+                  <h3 class="card-title">All Sale Invoices</h3>
+                </div>
+                <table id="invoice_table" class="table">
+                    <thead>
+                      <tr>
+                        <th class="th-sm">Invoice Number
+                        </th>
+                        <th class="th-sm">Invoice Date
+                        </th>
+                        <th class="th-sm">Invoice Pay Type
+                        </th>
+                        <th class="th-sm">Customer Name
+                        </th>
+                        <th class="th-sm">Total
+                        </th>
+                        <th class="th-sm">Action
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for invoice,total in salesinvoice_list %}
+                         <tr>
+                          
+                        <td><a href="{% url 'sales_app:sales_invoice_detail' pk=invoice.pk %}">{{ invoice.Invoiceno }}</a></td>
+                        <td>{{ invoice.Invoicedate|date:"d/m/Y" }}</td>
+                        <td>{{ invoice.Invoicetype }}</td>
+                        <td>{{ invoice.Customername }}</td>
+                        <td>{{ total|floatformat:2 }}</td>
+                        <td><a href="{% url 'sales_app:sales_update' pk=invoice.pk %}"><i class="fa fa-wrench"></i></a>  <a href="{% url 'sales_app:sales_delete' pk=invoice.pk %}" class="anchor-to-delete"><i class="fa fa-trash"></i></a></td>
+                  
+                    </tr>  
+                      {% endfor %}
+                    </tbody>
+                  </table>
+              </div>
+
+
+            </section>
+           
+
+</div>
+
+<!-- /.content-wrapper -->
+{% endblock %}
+
+
+<!-- jQuery -->
+ {% block js %}
+ {% load static %}
+<!-- <script src="js/jquery-3.5.1.js"></script> -->
+
+
+<!-- jQuery -->
+<!-- bs-custom-file-input -->
+<script src="{% static '/plugins/bs-custom-file-input/bs-custom-file-input.min.js' %}"></script>
+
+<script src="{% static '/plugins/select2/js/select2.full.min.js' %}"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+	<script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+
+	<script src="https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap4.min.js"></script>
+  <script src="{% static '/plugins/inputmask/min/jquery.inputmask.bundle.min.js' %}"></script>
+
+
+<script type="text/javascript">
+$(document).ready(function () {
+bsCustomFileInput.init();
+});
+$('#datemask').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })
+$('#datemask2').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })
+
+$(document).ready(function () {
+$('#invoice_table').DataTable({
+      "paging": true,
+      "lengthChange": true,
+      "searching": true,
+      "ordering": true,
+      "autoWidth": true,
+      "responsive": true,
+      "info" : true,
+      "columnDefs": [{ "orderable": false, "targets": 5 }]
+});
+});
+
+</script>
+<script type="text/javascript">
+
+$(document).on('click',".anchor-to-delete",function(e){
+  e.preventDefault();
+  document.getElementById('id01').style.display='block';
+
+  document.getElementById("delete_confirm_form").action=$(this).attr('href');
+  
+  });
+
+  var modal = document.getElementById('id01');
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+
+$(".cancelbtn").on('click',function(e){
+  var modal = document.getElementById('id01');
+  modal.style.display="none";
+});
+
+</script>
+
+<script>
+$(document).ready(function(){
+$('#invoice_table_wrapper').attr('style',"margin-top: 10px; margin-right: 10px;");
+$('#invoice_table_length').attr('style','margin-left: 8px; margin-top:2px;');
+$('#invoice_table_paginate').attr('style','margin-bottom: 6px;');
+$('#invoice_table_info').attr('style','margin-bottom: 6px; margin-left:5px; font-weight: bold;')
+})
+
+</script>
+
+{% endblock %}
+

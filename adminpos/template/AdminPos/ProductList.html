@@ -1,0 +1,323 @@
+{% extends 'AdminPos/index.html' %}
+{% load bootstrap4 %}
+
+{% block links %}
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static  'plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+
+{% endblock %}
+{% block css %}
+
+
+
+* {box-sizing: border-box}
+
+/* Set a style for all buttons */
+button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  opacity: 0.9;
+}
+
+button:hover {
+  opacity:1;
+}
+
+/* Float cancel and delete buttons and add an equal width */
+.cancelbtn, .deletebtn {
+  float: left;
+  width: 50%;
+}
+
+/* Add a color to the cancel button */
+.cancelbtn {
+  background-color: #ccc;
+  color: black;
+}
+
+/* Add a color to the delete button */
+.deletebtn {
+  background-color: #f44336;
+}
+
+/* Add padding and center-align text to the container */
+.container {
+  padding: 16px;
+  text-align: center;
+}
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1040; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: #474e5d;
+  padding-top: 50px;
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* Style the horizontal ruler */
+hr {
+  border: 1px solid #f1f1f1;
+  margin-bottom: 25px;
+}
+
+/* The Modal Close Button (x) */
+.close {
+  position: absolute;
+  right: 35px;
+  top: 15px;
+  font-size: 40px;
+  font-weight: bold;
+  color: #f1f1f1;
+}
+
+.close:hover,
+.close:focus {
+  color: #f44336;
+  cursor: pointer;
+}
+
+/* Clear floats */
+.clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+/* Change styles for cancel button and delete button on extra small screens */
+@media screen and (max-width: 300px) {
+  .cancelbtn, .deletebtn {
+    width: 100%;
+  }
+}
+
+{% endblock %}
+
+  <!-- Content Wrapper. Contains page content -->
+  {% block body_block %} 
+  <div class="content-wrapper">
+  {% for message in messages %}
+<div class="alert alert-{{ message.tags }}" role="alert">
+  <strong>{{ message }}</strong>
+</div>
+{% endfor %}
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>Product List</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{% url 'accounts:index' %}">Home</a></li>
+              <li class="breadcrumb-item active">All Products</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+    {% comment %} modal form starts {% endcomment %}
+  <div id="id01" class="modal">
+  <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
+  <form  method="post" class="modal-content" action="" id="delete_confirm_form">
+    {% csrf_token %}
+    <div class="container">
+      <h1>Delete Product</h1>
+      <p>Are you sure you want to delete your product?</p>
+
+      <div class="clearfix">
+        <button type="button" class="cancelbtn">Cancel</button>
+        <button type="submit" class="deletebtn">Delete</button>
+      </div>
+    </div>
+  </form>
+  </div>
+  {% comment %} end form  {% endcomment %}
+
+    <section class="content">
+        <div class="container-fluid">
+          
+            <!-- left column -->
+            
+              <!-- general form elements -->
+              <div class="card card-primary table-card">
+                <div class="card-header">
+                  <h3 class="card-title">All Products</h3>
+                </div>
+                <table id="product_table" class="table">
+                    <thead>
+                      <tr>
+                        <th class="th-sm">Product Code
+                        </th>
+                        <th class="th-sm">Product Name
+                        </th>
+                        <th class="th-sm">Quantity
+                        </th>
+                        <th class="th-sm">Price
+                        </th>
+                        <th class="th-sm">Brand
+                        </th>
+                        <th class="th-sm">Action
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for products in Product_List %}
+                         <tr>
+                          {% if products.Product_Image %}
+                          <td><a href="{{ products.Product_Image.url }}">{{ products.Product_Code }}</a></td>
+                        {% else %}  
+                        <td><a href="#">{{ products.Product_Code }}</a></td>
+                        {% endif %}
+                        <td>{{ products.Product_name|capfirst }}</td>
+                        <td>{{ products.Quantity }}</td>
+                        <td>{{ products.Selling_price|floatformat:2 }}</td>
+                        <td>{{ products.Product_Brand.Brand_name|capfirst }}</td>
+                        <td>
+                        <a href="{% url 'Product_app:product_update' pk=products.pk %}"><i class="fa fa-wrench"></i></a>  
+                        <a href="{% url 'Product_app:product_delete' pk=products.pk %}" class="anchor-to-delete" ><i class="fa fa-trash"></i></a>
+                        </td>
+                    </tr>  
+                      {% endfor %}
+                    </tbody>
+                  </table>
+              </div>
+{% comment %} <!-- start pagination-->
+  <nav aria-label="Page navigation example">
+  <ul class="pagination justify-content-center">
+    {% if not page_obj.has_previous %}
+    <li class="page-item disabled">
+      <a class="page-link" href="#" tabindex="-1">Previous</a>
+    </li>
+    {% else %}
+    <li class="page-item">
+      <a class="page-link" href="?page=1" tabindex="-1">First</a>
+    </li>
+    <li class="page-item">
+      <a class="page-link" href="?page={{ page_obj.previous_page_number }}" tabindex="-1">Previous</a>
+    </li>
+    {% endif %}
+    {% for num in page_obj.paginator.page_range %}
+      {% if num == page_obj.number  %}
+        <li class="page-item disabled"><a class="page-link" href="#">{{ num }}</a></li>
+      {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3'  %}
+        <li class="page-item "><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+      {% endif %}
+    {% endfor %}  
+
+    {% if page_obj.has_next %}
+    <li class="page-item "><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+    <li class="page-item "><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a></li>
+    {% endif %}  
+  </ul>
+</nav>
+<!-- end pagination--> {% endcomment %}
+
+</section>
+
+</div>
+<!-- /.content-wrapper -->
+{% endblock %}
+
+
+<!-- jQuery -->
+ {% block js %}
+ {% load static %}
+<!-- <script src="js/jquery-3.5.1.js"></script> -->
+
+
+<!-- jQuery -->
+<!-- bs-custom-file-input -->
+<script src="{% static '/plugins/bs-custom-file-input/bs-custom-file-input.min.js' %}"></script>
+
+<script src="{% static '/plugins/select2/js/select2.full.min.js' %}"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+	<script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+
+	<script src="https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap4.min.js"></script>
+
+
+<script type="text/javascript">
+$(document).ready(function () {
+bsCustomFileInput.init();
+});
+
+$(document).ready(function () {
+$('#product_table').DataTable({
+      "paging": true,
+      "lengthChange": true,
+      "searching": true,
+      "ordering": true,
+      "autoWidth": true,
+      "responsive": true,
+      "info" : true,
+      "columnDefs": [{ "orderable": false, "targets": 5 }]
+});
+});
+
+</script>
+<script type="text/javascript">
+
+$(document).on('click',".anchor-to-delete",function(e){
+  e.preventDefault();
+  document.getElementById('id01').style.display='block';
+
+  document.getElementById("delete_confirm_form").action=$(this).attr('href');
+  
+  });
+
+  var modal = document.getElementById('id01');
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+
+$(".cancelbtn").on('click',function(e){
+  var modal = document.getElementById('id01');
+  modal.style.display="none";
+});
+
+</script>
+
+<script>
+$(document).ready(function(){
+$('#product_table_wrapper').attr('style',"margin-top: 10px; margin-right: 10px;");
+$('#product_table_length').attr('style','margin-left: 8px; margin-top:2px;');
+$('#product_table_paginate').attr('style','margin-bottom: 6px;');
+$('#product_table_info').attr('style','margin-bottom: 6px; margin-left:5px; font-weight: bold;')
+})
+
+</script>
+
+{% endblock %}
+
+<!-- <style>
+.table-card{
+    overflow-x: scroll;
+}
+</style> -->
+

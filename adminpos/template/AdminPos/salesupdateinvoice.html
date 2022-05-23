@@ -1,0 +1,597 @@
+{% extends 'AdminPos/index.html' %}
+{% load static %}
+  <!-- Content Wrapper. Contains page content -->
+{% block links %}  
+<link rel="stylesheet" href="{% static 'plugins/select2/css/select2.min.css' %}">
+  <link rel="stylesheet" href="{% static '/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}">
+   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  {% endblock %}
+{% block css %}
+    table.table td a {
+    cursor: pointer;
+    display: inline-block;
+    margin: 0 5px;
+    min-width: 24px;
+}    
+table.table td a.add {
+    color: #27C46B;
+}
+table.table td a.edit {
+    color: #FFC107;
+}
+table.table td a.delete {
+    color: #E34724;
+}
+table.table td i {
+    font-size: 19px;
+}
+table.table td a.add i {
+    font-size: 24px;
+    margin-right: -1px;
+    position: relative;
+    top: 3px;
+}
+table.table td .add {
+    display: none;
+}
+.table-wrapper {
+    overflow-x: scroll !important;
+}
+.select2-container .select2-selection--single,.select2-container--default .select2-selection--single .select2-selection__arrow{
+    height: 38px !important;
+}
+{% endblock %}
+{% block body_block %} 
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    {% for message in messages %}
+<div class="alert alert-{{ message.tags }}  alert-dismissible fade show" role="alert">
+  <strong>{{ message }}</strong>
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+{% endfor %}
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>New Sales Invoice</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{% url 'accounts:index' %}">Home</a></li>
+              <li class="breadcrumb-item active">Sales Invoice</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <section class="content">
+        <div class="container-fluid">
+          
+            <!-- left column -->
+            <form method="POST" onsubmit="return validate_readonly_field()">
+                {% csrf_token %}
+              <!-- general form elements -->
+              <div class="card card-primary table-card">
+                <div class="card-header">
+                  <h3 class="card-title">Sales Invoice</h3>
+                </div>
+               
+                <div class="row">
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="InvoiceNumber" >Invoice Number</label>
+                            <div>
+                            <input type="text" name="InvoiceNumber" id="sinvoice_number" class="form-control" value="{{ invoice.Invoiceno }}" required readonly>
+                        </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Invoice Date</label>
+                            <div class="input-group">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                              </div>
+                              <input type="text" id="datemask" name="InvoiceDate" class="form-control" value="{{ invoice.Invoicedate|date:'d/m/Y' }}" data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" data-mask required>
+                            </div>
+                            <!-- /.input group -->
+                          </div>
+
+                          <div class="form-group">
+                            <label for="InvoiceType" >Invoice Type</label>
+                            <div>
+                            <select type="text" name="InvoiceType" id="sinvoice_type" class="form-control">
+                                {% if invoice.Invoicetype == 'Cash On Delivery'  %}
+                                <option value="0" selected>Cash On Delivery</option>
+                                <option value="1">Bank Transfer</option>
+                                <option value="2">Easy Paisa</option>
+                                {% elif invoice.Invoicetype == 'Bank Transfer' %}
+                                <option value="0" >Cash On Delivery</option>
+                                <option value="1" selected>Bank Transfer</option>
+                                <option value="2">Easy Paisa</option>
+                                {% else %}
+                                <option value="0" >Cash On Delivery</option>
+                                <option value="1" >Bank Transfer</option>
+                                <option value="2" selected>Easy Paisa</option>
+                                {% endif %}
+                        </select>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="si_customername" >Customer Name</label>
+                            <div>
+                            <input type="text" name="si_customername" id="si_customername" value="{{ invoice.Customername }}" class="form-control" required>
+                        </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="si_customeremail" >Customer Email</label>
+                            <div>
+                            <input type="email" name="si_customeremail" id="si_customeremail" class="form-control" value="{{ invoice.CustomerEmail }}">
+                        </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="si_customercontact" >Customer Contact</label>
+                            <div>
+                            <input type="text" name="si_customercontact" id="si_customercontact" class="form-control" value="{{ invoice.Contactno }}">
+                        </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label for="si_customeraddr" >Customer Address</label>
+                            <div>
+                            <textarea class="form-control" name="si_customeraddr" rows="5" id="si_customeraddr"  >{{ invoice.Address }}</textarea>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr>
+                
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h2>Products</h2>
+                        </div>
+                        
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                            <label for="prcode">Product Code</label>
+                            <div>
+                            <select class="form-control select2" name="prcode" id="prcode" required>
+                             <option disabled selected>--Select One--</option>
+
+                            </select>
+                        </div>
+                        </div>
+                        </div>
+
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="prcode">Product Name</label>
+                                <div>
+                                    <select class="form-control select2" id="prname" required>
+                                      <option disabled selected>--Select One--</option>
+                                    </select>
+                            </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                            <label for="prprice">Product Price</label>
+                            <div>
+                            <input type="text" class="form-control" name="prprice" id="prprice" readonly="readonly" required>
+                        </div>
+                        </div>
+                        </div>
+                        
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                           
+                            <button type="button" class="btn btn-info add-new"><i class="fa fa-plus"></i> Add New</button>
+                        </div>
+                       </div>
+                       <div class="table-wrapper">
+                    <table class="table table-bordered" id="producttable">
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>Name</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                                <th>Discount</th>
+                                <th>Total</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product,total in products %}
+                            <tr>
+                            <td>
+                            <input type="text" class="form-control" name="code" value="{{ product.product_code }}" id="0" required="" readonly="">
+                            </td>
+                            <td>
+                            <input type="text" class="form-control" name="name" id="1" required="" value="{{ product.product_name }}" readonly="">
+                            </td>
+                            <td>
+                            <input type="text" class="form-control" name="quantity" id="2" value="{{ product.SaleQuantity }}" oninput="calcTotal();" value="0" required="" readonly="">
+                            </td>
+                            <td>
+                            <input type="text" class="form-control" name="price" id="3" value="{{ product.Price }}" oninput="calcTotal();" value="0" required="" readonly="">
+                            </td>
+                            <td>
+                            <input type="text" class="form-control" name="discount" value="{{ product.Discount }}" oninput="calcTotal();" value="0" id="4" readonly="">
+                            </td>
+                            <td class="producttotals">
+                            <input type="text" class="form-control producttotals" value='{{ total }}' name="linetotal" value="0" id="5" readonly="">
+                            </td>
+                            <td>
+                            <a class="add" title="Add" data-toggle="tooltip" style="display: none;"><i class="material-icons"></i></a><a class="delete" title="Delete"><i class="material-icons"></i></a>
+                            </td>
+                            </tr>
+                            </tbody>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+               
+
+                <hr>
+                <!-- <div class="col-md-12">
+                    <div class="form-group">
+                       
+                        <button type="button" class="btn btn-info done" onclick="calcSub();"><i class="fa fa-calendar-alt"></i> Done</button>
+                    </div>
+                   </div> -->
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="si_subtotal" >Subtotal</label>
+                            <div>
+                            <input type="text" name="si_subtotal" id="si_subtotal" class="form-control" value="{{ invoice.SubTotal }}" readonly="readonly">
+                        </div>
+                    </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="si_discount" >Discount</label>
+                            <div>
+                            <input type="number" name="si_discount" id="si_discount" value="{{ invoice.Discount }}" class="form-control">
+                        </div> 
+                    </div>
+                </div> 
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="si_tax" >Tax(in percentage)</label>
+                        <div>
+                        <input type="number"  min='0' max='100' name="si_tax" id="si_tax" value="{{ tax }}" class="form-control">
+                    </div>
+                </div>
+                </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="si_shipping" >Shipping Charges</label>
+                    <div>
+                    <input type="number" name="si_shipping" id="si_shipping" value="{{ invoice.Shippingcharge }}" class="form-control">
+                </div> 
+            </div>
+        </div> 
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="si_total">Total</label>
+                <div>
+                <input type="text" name="si_total" id="si_total" value="{{ nettotal }}" class="form-control" readonly="readonly">
+            </div>
+        </div>
+        </div>
+
+        <div class="card-footer">
+          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="submit" class="btn btn-danger">Delete</button>
+        </div>
+</div>
+            </section>
+        </div>
+    </form>
+
+</div>
+{% endblock %}
+{% block js %}
+{% load static %}
+<script src="{% static '/plugins/jquery/jquery.min.js' %}"></script>
+
+<script src="{% static 'js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'js/dataTables.bootstrap.min.js' %}"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="{% static '/plugins/select2/js/select2.full.min.js' %}"></script>
+
+<script src="{% static '/plugins/bs-custom-file-input/bs-custom-file-input.min.js' %}"></script>
+<script src="{% static '/plugins/moment/moment.min.js' %}"></script>
+<script src="{% static '/plugins/inputmask/min/jquery.inputmask.bundle.min.js' %}"></script>
+
+<script type="text/javascript">
+
+var activeQuantity=null;
+$(document).ready(function () {
+bsCustomFileInput.init();
+});
+
+$('#datemask').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })
+    //Datemask2 mm/dd/yyyy
+$('#datemask2').inputmask('mm/dd/yyyy', { 'placeholder': 'mm/dd/yyyy' })
+
+function calcTotal(){
+        $('#ptotal').val(($('#pprice').val()*$('#pqty').val())-$('#pdisc').val());
+}
+
+
+function calcSub(){
+    //var cls=document.getElementsByClassName("producttotals")
+    var cls = document.getElementById("producttable").rows.length;
+    var sum = 0;
+    for (var i = 1; i < cls; i++){
+        //if(cls[i].children[5].className == "producttotals"){
+            //sum += isNaN(cls[i].children[5].val) ? 0 : parseInt(cls[i].childern[5].val);
+        //}
+        var f=document.getElementById("producttable").rows[i].cells[5];
+        sum=sum+Number(f.children[0].value);
+
+    }
+    $('#si_subtotal').val(sum);
+    $('#si_total').val(sum);
+}
+
+var i=0;
+$(document).ready(function(){
+	$('[data-toggle="tooltip"]').tooltip();
+	var actions = $("table td:last-child").html();
+	// Append table with add row form on add new button click
+    $(".add-new").click(function(){
+		$(this).attr("disabled", "disabled");
+		var index = $("table tbody tr:last-child").index();
+        var row = '<tr>' +
+            '<td><input type="text" class="form-control" name="code" id="pcode" required readonly="readonly"></td>' +
+            '<td><input type="text" class="form-control" name="name" id="pname" required readonly="readonly"></td>' +
+            '<td><input type="text" class="form-control" name="quantity" id="pqty" oninput="calcTotal();" value="0" required></td>' +
+            '<td><input type="text" class="form-control" name="price" id="pprice" oninput="calcTotal();" value="0" required readonly="readonly"></td>' +
+            '<td><input type="text" class="form-control" name="discount" oninput="calcTotal();" value="0" id="pdisc"></td>' +
+            '<td class="producttotals"><input type="text" class="form-control producttotals" name="linetotal" value="0" id="ptotal" readonly="readonly"></td>' +
+            '<td><a class="add" title="Add" data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a><a class="delete" title="Delete"><i class="material-icons">&#xE872;</i></a></td>'+
+			// '<td>' + actions + '</td>' +
+        '</tr>';
+        var name = $('#prname').val();
+        var code = $('#prcode').val();
+        var price = $('#prprice').val();
+
+       
+          $("table").append(row);		
+		$("table tbody tr").eq(index + 1).find(".add, .edit").toggle();
+        $('[data-toggle="tooltip"]').tooltip();
+
+         $('#pcode').val($('#prcode').find(':selected').text());
+         $('#pname').val($('#prname').find(':selected').text());
+         $('#pprice').val($('#prprice').val());
+
+         
+      
+    	
+    });
+	// Add row on add button click
+	$(document).on("click", ".add", function(){
+        {% comment %} if (Number($('#pqty').val()) > Number(activeQuantity) || Number($('#pqty').val())<0 )
+        {
+            alert('Active Product Quantity Is Exceeding From Available Quantity!');
+            return
+        }  {% endcomment %}
+        activeQuantity=null;
+    $('pqty').attr('disabled','disabled');
+    $('pdisc').attr('disabled','disabled');
+		var empty = false;
+        var input = $(this).parents("tr").find('input[type="text"]');
+        
+        input.each(function(){
+			if(!$(this).val()){
+				$(this).addClass("error");
+        $(this).attr('id', i);
+				empty = true;
+			} else{
+                $(this).removeClass("error");
+            }
+                
+        });
+        
+		$(this).parents("tr").find(".error").first().focus();
+		if(!empty){
+			input.each(function(){
+				// $(this).parent("td").html($(this).val());
+        $(this).attr('id', i);
+        i++;
+        $(this).prop('readonly',true);
+			});			
+			$(this).parents("tr").find(".add, .edit").toggle();
+            $(".add-new").removeAttr("disabled");
+            
+        }
+      
+        calcSub();
+        
+    });
+	// Edit row on edit button click
+	$(document).on("click", ".edit", function(){	
+        
+        $(this).parents("tr").find("td:not(:last-child)").each(function(){
+            var input ='<input type="text" class="form-control edit_table" value="' + $(this).text() + '">';
+			$(this).html(input);
+		});		
+		$(this).parents("tr").find(".add, .edit").toggle();
+        $(".add-new").attr("disabled", "disabled");
+    });
+	// Delete row on delete button click
+	$(document).on("click", ".delete", function(){
+        $(this).parents("tr").remove();
+        $(".add-new").removeAttr("disabled");
+        calcSub();
+    });
+    
+
+});
+
+
+
+$(function () {
+     $('#prcode').select2({
+            ajax: {
+                url: '{% url 'sales_app:getproduct' %}',
+                dataType: 'json',
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {id: item.id, text: item.Product_Code};
+                        })
+                    };
+                }
+            },
+            minimumInputLength: 1
+        });
+})
+
+$(function(){
+
+    $('#prname').select2({
+            ajax: {
+                url: '{% url 'sales_app:getproductnames' %}',
+                dataType: 'json',
+                processResults: function (data) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {id: item.id, text: item.Product_name};
+                        })
+                    };
+                }
+            },
+            minimumInputLength: 1
+        });
+});
+
+
+$('#prcode').on('change',function(e){
+    var id=$(this).val();
+    $.ajax({
+        url:'{% url 'sales_app:getproductdetails' %}',
+        dataType:'json',
+        method:'GET',
+        data:{
+            'id':id,
+        },
+        success:function(data){
+            $('#prprice').val(data.Selling_price)
+            activeQuantity=data.Quantity;
+            $('#prname').empty();
+            $('#prname').append($('<option>', {
+                text: '--Select One--',
+                disabled: true
+                }));
+            $('#prname').append($('<option>', {
+                id: data.id,
+                text: data.Product_name,
+                selected: true
+                }));
+        }
+
+});
+});
+
+$('#prname').on('change',function(e){
+    var id=$(this).val();
+    $.ajax({
+        url:'{% url 'sales_app:getproductcodename' %}',
+        dataType:'json',
+        method:'GET',
+        data:{
+            'id':id,
+        },
+        success:function(data){
+            $('#prprice').val(data.Selling_price)
+            activeQuantity=data.Quantity;
+            $('#prcode').empty();
+            $('#prcode').append($('<option>', {
+                text: '--Select One--',
+                disabled: true
+                }));
+            $('#prcode').append($('<option>', {
+                text: data.Product_Code,
+                selected: true
+                }));
+        }
+
+});
+});
+
+
+</script>
+
+<script type="text/javascript">
+  $('#si_discount').on("input",function(e){
+   var s=Number($('#si_tax').val());
+  var a=Number($('#si_shipping').val());
+  var b=Number($('#si_discount').val());
+  var c=Number($('#si_subtotal').val());
+    $('#si_total').val(c-b+((s/100)*c)+a);
+  })
+</script>
+<script type="text/javascript">
+  $('#si_tax').on("input",function(e){
+  var s=Number($('#si_tax').val());
+  var a=Number($('#si_shipping').val());
+  var b=Number($('#si_discount').val());
+  var c=Number($('#si_subtotal').val());
+    $('#si_total').val(c-b+((s/100)*c)+a);
+  })
+  </script>
+  <script type="text/javascript">
+  $('#si_shipping').on("input",function(e){
+    var s=Number($('#si_tax').val());
+  var a=Number($('#si_shipping').val());
+  var b=Number($('#si_discount').val());
+  var c=Number($('#si_subtotal').val());
+    $('#si_total').val(c-b+((s/100)*c)+a);
+  })
+</script>
+
+<script>
+function validate_readonly_field()
+{
+    if( $('#si_total').val()=='' || $('#si_subtotal').val()=='')
+    {
+        alert("Kindly add some products!")
+        return false;
+    }
+    return true;
+}
+</script>
+{% endblock %}
+
+<tbody>
+                            
+                        

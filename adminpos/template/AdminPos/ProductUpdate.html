@@ -1,0 +1,243 @@
+{% extends 'AdminPos/index.html' %}
+{% load bootstrap4 %}
+{% block links %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'plugins/select2/css/select2.min.css' %}">
+  <link rel="stylesheet" href="{% static '/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+{% endblock %}
+
+{% block css %}
+
+  .select2-container .select2-selection--single,.select2-container--default .select2-selection--single .select2-selection__arrow{
+    height: 38px !important;
+}
+table.table td a {
+    cursor: pointer;
+    display: inline-block;
+    margin: 0 5px;
+    min-width: 24px;
+}    
+table.table td a.add {
+    color: #27C46B;
+}
+table.table td a.edit {
+    color: #FFC107;
+}
+table.table td a.delete {
+    color: #E34724;
+}
+table.table td i {
+    font-size: 19px;
+}
+table.table td a.add i {
+    font-size: 24px;
+    margin-right: -1px;
+    position: relative;
+    top: 3px;
+}
+table.table td .add {
+    display: none;
+}
+.table-wrapper {
+    overflow-x: scroll !important;
+}
+{% endblock %}
+
+
+
+  <!-- Content Wrapper. Contains page content -->
+  {% block body_block %}  
+  <div class="content-wrapper">
+  
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>Update Product</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{% url 'accounts:index' %}">Home</a></li>
+              <li class="breadcrumb-item active">Update Product</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <section class="content">
+        <div class="container-fluid">
+          <div class="row">
+            <!-- left column -->
+            <div class="col-md-12">
+              <!-- general form elements -->
+              <div class="card card-primary">
+                <div class="card-header">
+                  <h3 class="card-title">Product Info</h3>
+                </div>
+
+<form class="form-horizontal" method="POST" enctype="multipart/form-data" id='update_form' data-id='{{ pk }}'>
+  {% csrf_token %}
+
+    <div class='card-body'>
+    {% bootstrap_form form %}
+    </div>
+    <div class="card-footer">
+    
+        <button name="singlebutton" type="submit" class="btn btn-primary">Update</button>
+        <button name="singlebutton" class="btn btn-danger">Delete</button>
+      </div>
+    
+    </form>
+</div>
+</section>
+
+</div>
+<!-- /.content-wrapper -->
+
+{% endblock %}
+
+
+<!-- jQuery -->
+ {% block js %}
+ {% load static %}
+<script src="{% static '/plugins/bs-custom-file-input/bs-custom-file-input.min.js' %}"></script>
+
+<script src="{% static '/plugins/select2/js/select2.full.min.js' %}"></script>
+
+<script type="text/javascript">
+$(document).ready(function () {
+bsCustomFileInput.init();
+});
+
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+ 
+    var html='<div class="row">      <div class="col-md-12">          <h2>Product Variation</h2>      </div>          </div>    <div class="row">      <div class="col-md-6">          <div class="form-group">          <label for="prcode">Variation Name</label>          <div>            <select class="form-control select2" id="VName" >              <option disabled selected>--Select One--</option>   {% for var in variances %}   <option value={{ var.pk }}>{{ var.variance_name|capfirst }}</option> {% endfor %}            </select>    </div>      </div>      </div>      <div class="col-md-6">          <div class="form-group">          <label for="prprice">Variation Value</label>          <div>          <input type="text" class="form-control" name="VValue" id="VValue" >      </div>      </div>      </div>        </div>  <div class="col-md-4">    <div class="form-group">               <button type="button" class="btn btn-info add-new"><i class="fa fa-plus"></i> Add New</button>    </div>   </div>       <div class="table-wrapper">    <table class="table table-bordered" id="variationtable">        <thead>            <tr>                <th>Variation Name</th>                <th>Variation Value</th>                <th>Action</th>            </tr>        </thead>        <tbody>                    </tbody>    </table></div>'
+    var div=$('#available_quantity').parent();
+    div.after(html);
+    $('#manufacturing_date').val('{{ manf_date }}')
+    $('#expiry_date').val('{{ exp_date }}')
+});
+var i=0;
+$(document).ready(function(){
+	$('[data-toggle="tooltip"]').tooltip();
+	var actions = $("table td:last-child").html();
+	// Append table with add row form on add new button click
+    $(".add-new").click(function(){
+		$(this).attr("disabled", "disabled");
+		var index = $("table tbody tr:last-child").index();
+        var row = '<tr>' +
+            '<td><input type="text" class="form-control" name="VNameI" id="VNameI" required readonly></td>' +
+            '<td><input type="text" class="form-control" name="VValueI" id="VValueI" required readonly></td>' +
+            '<td><a class="add" title="Add" data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a><a class="delete" title="Delete"><i class="material-icons">&#xE872;</i></a></td>'+
+			// '<td>' + actions + '</td>' +
+        '</tr>';
+        var vn = $('#VNameI').val();
+        var vv = $('#VValueI').val();
+
+       
+          $("table").append(row);		
+		$("table tbody tr").eq(index + 1).find(".add, .edit").toggle();
+        $('[data-toggle="tooltip"]').tooltip();
+         $('#VNameI').val($('#VName :selected').text());
+         $('#VValueI').val($('#VValue').val());
+        //  $('#pprice').val($('#prprice').val());
+
+         
+      
+    	
+    });
+	// Add row on add button click
+	$(document).on("click", ".add", function(){
+		var empty = false;
+        var input = $(this).parents("tr").find('input[type="text"]');
+        
+        input.each(function(){
+			if(!$(this).val()){
+				$(this).addClass("error");
+        $(this).attr('id', i);
+				empty = true;
+			} else{
+                $(this).removeClass("error");
+            }
+                
+        });
+        
+		$(this).parents("tr").find(".error").first().focus();
+		if(!empty){
+			input.each(function(){
+				//$(this).parent("td").html($(this).val());
+        $(this).attr('id', i);
+        i++;
+        $(this).prop('readonly',true);
+      });			
+			$(this).parents("tr").find(".add, .edit").toggle();
+            $(".add-new").removeAttr("disabled");
+            
+        }
+      
+        // calcSub();
+        
+    });
+	$(document).on("click", ".delete", function(){
+        $(this).parents("tr").remove();
+        $(".add-new").removeAttr("disabled");
+        // calcSub();
+    });
+
+$(function () {
+    //Initialize Select2 Elements
+    $('.select2').select2()
+
+    //Initialize Select2 Elements
+    $('.select2bs4').select2({
+      theme: 'bootstrap4'
+    })})    
+
+});
+</script>
+<script>
+
+$(document).ready(function(){
+
+  let pk=$('#update_form').attr('data-id');
+
+    $.ajax({
+      url:"{% url  'Product_app:get_product_variance' %}",
+      type:'GET',
+      data:{
+        'pk':pk,
+      },
+      dataType:'json',
+      success:function(data){
+        let model=JSON.parse(data);
+        for(var i=0;i<model.length;i++)
+        {
+           let variance=model[i]['fields']['variance'];
+           let value=model[i]['fields']['value'];
+           if(variance!=null)
+           {
+             $('#VName').val(variance);
+             $('#VValue').val(value);
+             $('.add-new').click();
+             $('#variationtable > tbody > tr:last-child > td:last-child .add').trigger('click');
+           }  
+        }
+      },
+      failure:function(data){
+        alert('Variances Couldnot be retrieved');
+      }
+    });
+
+});
+
+
+</script>
+
+
+{% endblock %}
