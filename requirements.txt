@@ -12,3 +12,4 @@ six==1.15.0
 soupsieve==2.2
 sqlparse==0.4.1
 gunicorn
+dateutil
