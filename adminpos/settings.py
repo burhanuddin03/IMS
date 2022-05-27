@@ -27,7 +27,7 @@ SECRET_KEY = '+opwp&h=@v^lff5w!o1b2r!f!t(o#z&hgh2=l&823vr60u*j%m'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['wp-ims.herokuapp.com']
 
 
 # Application definition
